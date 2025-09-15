@@ -7,12 +7,17 @@
     <meta name="description"
         content="Dunes: Desert Domination - A multiplayer desert-themed arena game where you grow, shoot, and dominate!">
     <meta name="keywords" content="multiplayer game, agar.io like, desert game, online game">
-    <title>Dunes: Desert Domination</title>
+    <title>Dunes</title>
     <link rel="icon" href="dune.jpg" type="image/x-icon">
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+
+        }
+
         :root {
             --sand-light: #F4E8D1;
             --sand-dark: #D2B48C;
@@ -55,6 +60,7 @@
             align-items: center;
             z-index: 5;
             box-shadow: 0 2px 10px var(--shadow);
+            box-sizing: border-box;
         }
 
         #top-nav span {
@@ -112,15 +118,23 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
-            background: rgba(244, 232, 209, 0.95);
+            background: transparent;
             padding: 40px;
             color: var(--brown-primary);
             border-radius: 20px;
             text-align: center;
-            box-shadow: 0 0 30px var(--shadow);
+            box-shadow: none;
             display: block;
             max-width: 400px;
-            width: 90%;
+            width: 100%;
+        }
+
+        .inside-main-menu {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
         }
 
         #main-menu h1 {
@@ -130,10 +144,10 @@
             color: var(--brown-dark);
         }
 
-        #main-menu button {
+        .main-menu-button {
             padding: 15px 30px;
             margin: 15px 10px;
-            background: var(--brown-primary);
+            background: #fdaa14;
             border: none;
             color: white;
             border-radius: 10px;
@@ -146,6 +160,22 @@
         #main-menu button:hover {
             background: #A0522D;
             transform: scale(1.05);
+        }
+
+        .below-play-btn {
+            padding: 15px 30px;
+            margin: 15px 10px;
+            background: #fff;
+            border: none;
+            color: #000;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: var(--transition);
+            width: fit-content;
+            white-space: nowrap;
+
         }
 
         #create-modal,
@@ -464,7 +494,7 @@
         }
 
         #loading-overlay {
-            display: none;
+            display: flex;
             position: fixed;
             top: 0;
             left: 0;
@@ -645,12 +675,17 @@
                 top: 180px;
             }
         }
+
+        #max-players {
+            box-sizing: border-box;
+        }
     </style>
 </head>
 
 <body>
     <div id="top-nav">
         <span>Total Kills: <span id="total-kills">0</span></span>
+        <span id="map-id-display" style="display: none;">Map ID: <span id="map-id-text"></span></span>
         <span>Coins: <span id="coins">0</span></span>
     </div>
     <div id="sidebar">
@@ -658,11 +693,24 @@
         <button onclick="customize()">Customize Color</button>
     </div>
     <div id="main-menu">
-        <h1>Dunes: Desert Domination</h1>
-        <button onclick="joinMain()">Play Public</button>
-        <div>
-            <button onclick="showCreateModal()">Create Private</button>
-            <button onclick="showJoinModal()">Join Private</button>
+        <h1>Dunes</h1>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <button class="main-menu-button" onclick="joinMain()">Play</button>
+        <div class="inside-main-menu">
+            <button class="below-play-btn" onclick="showCreateModal()">Create Private</button>
+            <button class="below-play-btn" onclick="showJoinModal()">Join Private</button>
         </div>
     </div>
     <div id="create-modal">
@@ -1110,11 +1158,15 @@
 
         async function generateUniqueID() {
             let id;
+            let attempts = 0;
+            const maxAttempts = 10;
             do {
                 id = generateID(5);
                 const snapshot = await db.ref('maps/' + id).once('value');
-            } while (snapshot.val() !== null);
-            return id;
+                if (snapshot.val() === null) return id;
+                attempts++;
+            } while (attempts < maxAttempts);
+            throw new Error('Could not generate unique ID after multiple attempts');
         }
 
         function generateID(length) {
@@ -1153,6 +1205,9 @@
                 if (mapID === 'main') {
                     checkAndSpawnDots('main');
                     checkAndSpawnPowerUps('main');
+                } else {
+                    document.getElementById('map-id-display').style.display = 'inline';
+                    document.getElementById('map-id-text').textContent = mapID;
                 }
                 const name = document.getElementById('player-name').value.trim() || playerName;
                 initGame(name, mapID);
