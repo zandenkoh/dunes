@@ -3,191 +3,355 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dunes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description"
+        content="Dunes: Desert Domination - A multiplayer desert-themed arena game where you grow, shoot, and dominate!">
+    <meta name="keywords" content="multiplayer game, agar.io like, desert game, online game">
+    <title>Dunes: Desert Domination</title>
     <link rel="icon" href="dune.jpg" type="image/x-icon">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <style>
+        :root {
+            --sand-light: #F4E8D1;
+            --sand-dark: #D2B48C;
+            --brown-primary: #8B4513;
+            --brown-dark: #4A2C0B;
+            --accent-gold: #FFD700;
+            --accent-blue: #00BFFF;
+            --accent-green: #32CD32;
+            --accent-red: #FF4500;
+            --text-dark: #2C1506;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --transition: 0.3s ease;
+        }
+
         body {
             margin: 0;
             overflow: hidden;
-            background: #F4E8D1;
-            /* Light sandy color for desert theme */
-            font-family: Arial, sans-serif;
+            background: var(--sand-light);
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-dark);
+            touch-action: none;
+            /* Improved touch handling */
         }
 
         #canvas {
             display: block;
-            background: #F4E8D1;
-            /* Desert background */
+            background: var(--sand-light);
         }
 
-        #minimap {
+        #top-nav {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            width: 200px;
-            height: 200px;
-            border: 2px solid #8B4513;
-            /* Brown border for desert feel */
-            background: rgba(244, 232, 209, 0.7);
-            border-radius: 10px;
-        }
-
-        #leaderboard {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            color: #4A2C0B;
-            /* Darker brown for better contrast */
-            padding: 10px 0;
-            background: rgba(244, 232, 209, 0.5);
-            border: 2px solid #8B4513;
-            border-radius: 12px;
-            width: 220px;
-            font-family: 'Georgia', serif;
-            /* More elegant, readable font */
-            font-size: 14px;
-            /* Slightly larger text */
-            line-height: 1.6;
-            /* Improved line spacing */
-        }
-
-        #leaderboard h3 {
-            margin: 0 0 15px;
-            font-size: 18px;
-            /* Larger title */
-            text-align: center;
-            color: #8B4513;
-            /* Desert brown for theme consistency */
-            border-bottom: 1px solid #A0522D;
-            /* Subtle underline */
-            padding-bottom: 8px;
-        }
-
-        #leaderboard ol {
-            margin: 0;
-            padding-left: 20px;
-            /* Proper indent for list */
-            list-style-position: outside;
-        }
-
-        #leaderboard li {
-            margin-bottom: 8px;
-            /* Space between entries */
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(244, 232, 209, 0.9);
+            color: var(--brown-primary);
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
-            /* Align name and stats */
             align-items: center;
-            padding: 5px 8px;
-            border-radius: 5px;
-            transition: background 0.2s;
-            /* Smooth hover effect */
+            z-index: 5;
+            box-shadow: 0 2px 10px var(--shadow);
         }
 
-        #leaderboard li:hover {
-            background: rgba(139, 69, 19, 0.1);
-            /* Light hover effect */
-        }
-
-        #leaderboard li::marker {
-            color: #A0522D;
-            /* Custom bullet color */
+        #top-nav span {
             font-weight: bold;
+            font-size: 16px;
         }
 
-        /* Style for player names and stats */
-        #leaderboard li span.name {
-            flex: 1;
-            font-weight: bold;
-            color: #4A2C0B;
-        }
-
-        #leaderboard li span.stats {
-            flex: 0 0 auto;
-            color: #6B3F0E;
-            /* Slightly lighter for stats */
-            font-size: 13px;
-        }
-
-        #hud {
+        #sidebar {
             position: fixed;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #8B4513;
-            background: rgba(244, 232, 209, 0.8);
+            top: 60px;
+            left: 20px;
+            background: rgba(244, 232, 209, 0.95);
+            color: var(--brown-primary);
             padding: 15px;
-            border-radius: 15px;
-            display: flex;
-            justify-content: space-around;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            z-index: 5;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: var(--transition);
         }
 
-        .stat {
-            text-align: center;
+        #sidebar:hover {
+            transform: scale(1.05);
         }
 
-        .stat label {
+        #sidebar input {
+            width: 180px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--brown-primary);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--text-dark);
+        }
+
+        #sidebar button {
+            width: 100%;
+            padding: 10px;
+            background: var(--brown-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
             font-weight: bold;
+            transition: var(--transition);
         }
 
-        .cooldown {
-            width: 100px;
-            height: 10px;
-            background: #DDD;
-            border-radius: 5px;
-            margin-top: 5px;
+        #sidebar button:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
         }
 
-        .cooldown-fill {
-            height: 100%;
-            background: #4CAF50;
-            border-radius: 5px;
-            transition: width 0.2s;
-        }
-
-        #login {
+        #main-menu {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
-            background: rgba(244, 232, 209, 0.9);
-            padding: 30px;
-            color: #8B4513;
-            border-radius: 15px;
+            background: rgba(244, 232, 209, 0.95);
+            padding: 40px;
+            color: var(--brown-primary);
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 30px var(--shadow);
+            display: block;
+            max-width: 400px;
+            width: 90%;
         }
 
-        #login input {
-            padding: 12px;
-            margin: 10px 0;
-            width: 200px;
-            border-radius: 5px;
-            border: 1px solid #8B4513;
-            background: rgba(255, 255, 255, 0.5);
-            color: #8B4513;
+        #main-menu h1 {
+            margin-bottom: 30px;
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: var(--brown-dark);
         }
 
-        #login button {
-            padding: 12px 20px;
-            background: #8B4513;
+        #main-menu button {
+            padding: 15px 30px;
+            margin: 15px 10px;
+            background: var(--brown-primary);
             border: none;
             color: white;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: var(--transition);
         }
 
-        #login button:hover {
+        #main-menu button:hover {
             background: #A0522D;
+            transform: scale(1.05);
+        }
+
+        #create-modal,
+        #join-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            background: rgba(244, 232, 209, 0.95);
+            padding: 40px;
+            color: var(--brown-primary);
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px var(--shadow);
+            display: none;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        #create-modal input,
+        #join-modal input {
+            padding: 15px;
+            margin: 15px 0;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid var(--brown-primary);
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-dark);
+            font-size: 16px;
+        }
+
+        #create-modal button,
+        #join-modal button {
+            padding: 15px 30px;
+            background: var(--brown-primary);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        #create-modal button:hover,
+        #join-modal button:hover {
+            background: #A0522D;
+            transform: scale(1.05);
+        }
+
+        #minimap {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 220px;
+            height: 220px;
+            border: 3px solid var(--brown-primary);
+            background: rgba(244, 232, 209, 0.8);
+            border-radius: 15px;
+            display: none;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: transform 0.2s ease;
+            /* Added hover zoom */
+        }
+
+        #minimap:hover {
+            transform: scale(1.1);
+        }
+
+        #leaderboard {
+            position: fixed;
+            top: 260px;
+            right: 20px;
+            color: var(--brown-dark);
+            padding: 15px;
+            background: rgba(244, 232, 209, 0.95);
+            border: 3px solid var(--brown-primary);
+            border-radius: 15px;
+            width: 220px;
+            font-size: 15px;
+            line-height: 1.8;
+            display: none;
+            box-shadow: 0 4px 15px var(--shadow);
+            overflow-y: auto;
+            /* Added for long lists */
+            max-height: 300px;
+        }
+
+        #leaderboard h3 {
+            margin: 0 0 20px;
+            font-size: 20px;
+            text-align: center;
+            color: var(--brown-primary);
+            border-bottom: 2px solid #A0522D;
+            padding-bottom: 10px;
+        }
+
+        #leaderboard ol {
+            margin: 0;
+            padding-left: 25px;
+            list-style-type: decimal;
+        }
+
+        #leaderboard li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        #leaderboard li:hover {
+            background: rgba(139, 69, 19, 0.15);
+            transform: translateX(5px);
+        }
+
+        #leaderboard li span.name {
+            font-weight: bold;
+            color: var(--brown-dark);
+        }
+
+        #leaderboard li span.stats {
+            color: #6B3F0E;
+            font-size: 14px;
+        }
+
+        #hud {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--brown-primary);
+            background: rgba(244, 232, 209, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-around;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 15px var(--shadow);
+            display: none;
+        }
+
+        .stat {
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .stat label {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .cooldown {
+            width: 120px;
+            height: 12px;
+            background: #DDD;
+            border-radius: 6px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .cooldown-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            transition: width 0.1s;
+        }
+
+        #prestige-notif {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-gold);
+            background: rgba(244, 232, 209, 0.95);
+            padding: 15px 30px;
+            border-radius: 15px;
+            display: none;
+            font-size: 18px;
+            text-align: center;
+            box-shadow: 0 4px 15px var(--shadow);
+            animation: pulse-notif 1.5s infinite;
+            z-index: 5;
+        }
+
+        @keyframes pulse-notif {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.05);
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
         }
 
         #error {
             color: red;
-            margin-top: 10px;
+            margin-top: 15px;
+            font-size: 14px;
         }
 
         .power-up {
@@ -200,7 +364,7 @@
             }
 
             50% {
-                transform: scale(1.2);
+                transform: scale(1.15);
             }
 
             100% {
@@ -210,24 +374,27 @@
 
         #help-button {
             position: fixed;
-            bottom: 10px;
-            right: 10px;
-            width: 40px;
-            height: 40px;
-            background: #8B4513;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--brown-primary);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px var(--shadow);
             z-index: 10;
+            display: none;
+            transition: var(--transition);
         }
 
         #help-button:hover {
             background: #A0522D;
+            transform: rotate(360deg);
         }
 
         #manual-overlay {
@@ -237,57 +404,63 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 20;
             overflow-y: auto;
+            align-items: center;
+            justify-content: center;
         }
 
         #manual-content {
-            background: rgba(244, 232, 209, 0.9);
-            color: #8B4513;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 15px;
-            max-width: 800px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            font-size: 16px;
-            line-height: 1.5;
+            background: rgba(244, 232, 209, 0.98);
+            color: var(--brown-primary);
+            margin: 5%;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 900px;
+            box-shadow: 0 0 30px var(--shadow);
+            font-size: 18px;
+            line-height: 1.6;
         }
 
         #manual-content h2 {
             text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--brown-dark);
         }
 
         #manual-content h3 {
-            font-size: 20px;
-            margin-top: 20px;
+            font-size: 24px;
+            margin-top: 25px;
+            color: var(--brown-primary);
         }
 
         #manual-content p,
         #manual-content ul {
-            margin: 10px 0;
+            margin: 15px 0;
         }
 
         #manual-content ul {
-            padding-left: 20px;
+            padding-left: 25px;
         }
 
         #close-manual {
             display: block;
-            margin: 20px auto;
-            padding: 12px 20px;
-            background: #8B4513;
+            margin: 30px auto 0;
+            padding: 15px 30px;
+            background: var(--brown-primary);
             border: none;
             color: white;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
+            transition: var(--transition);
         }
 
         #close-manual:hover {
             background: #A0522D;
+            transform: scale(1.05);
         }
 
         #loading-overlay {
@@ -297,27 +470,27 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(244, 232, 209, 0.9);
+            background: rgba(244, 232, 209, 0.98);
             z-index: 15;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #8B4513;
-            font-size: 24px;
-            font-family: Arial, sans-serif;
+            color: var(--brown-primary);
+            font-size: 28px;
             text-align: center;
         }
 
         #loading-overlay::after {
             content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #8B4513;
+            display: block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid var(--brown-primary);
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-left: 10px;
+            margin-top: 20px;
         }
 
         @keyframes spin {
@@ -325,22 +498,200 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Customization Modal */
+        #customize-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            background: rgba(244, 232, 209, 0.95);
+            padding: 40px;
+            color: var(--brown-primary);
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px var(--shadow);
+            display: none;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        #customize-modal .color-picker {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        #customize-modal .color-swatch {
+            width: 40px;
+            height: 40px;
+            margin: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        #customize-modal .color-swatch.selected {
+            border-color: var(--accent-gold);
+            transform: scale(1.2);
+        }
+
+        #customize-modal button {
+            padding: 15px 30px;
+            background: var(--brown-primary);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        #customize-modal button:hover {
+            background: #A0522D;
+            transform: scale(1.05);
+        }
+
+        /* Touch Controls */
+        #joystick {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            display: none;
+            z-index: 10;
+            touch-action: none;
+        }
+
+        #joystick-knob {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: none;
+            z-index: 11;
+            touch-action: none;
+        }
+
+        #touch-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+            display: none;
+        }
+
+        #touch-controls button {
+            padding: 15px;
+            background: var(--brown-primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            touch-action: manipulation;
+        }
+
+        #touch-controls button:active {
+            background: #A0522D;
+            transform: scale(0.95);
+        }
+
+        /* Fullscreen Button */
+        #fullscreen-button {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--brown-primary);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            z-index: 5;
+            transition: var(--transition);
+        }
+
+        #fullscreen-button:hover {
+            background: #A0522D;
+        }
+
+        @media (max-width: 768px) {
+            #hud {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .stat {
+                margin: 5px;
+            }
+
+            #minimap {
+                width: 150px;
+                height: 150px;
+            }
+
+            #leaderboard {
+                width: 150px;
+                top: 180px;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div id="login">
-        <h2>Dunes</h2>
-        <input id="name" placeholder="Enter your name" type="text" maxlength="15">
-        <button id="join-button" onclick="joinGame()">Join Battle</button>
+    <div id="top-nav">
+        <span>Total Kills: <span id="total-kills">0</span></span>
+        <span>Coins: <span id="coins">0</span></span>
+    </div>
+    <div id="sidebar">
+        <input id="player-name" type="text" placeholder="Enter your name">
+        <button onclick="customize()">Customize Color</button>
+    </div>
+    <div id="main-menu">
+        <h1>Dunes: Desert Domination</h1>
+        <button onclick="joinMain()">Play Public</button>
+        <div>
+            <button onclick="showCreateModal()">Create Private</button>
+            <button onclick="showJoinModal()">Join Private</button>
+        </div>
+    </div>
+    <div id="create-modal">
+        <h2>Create Private Map</h2>
+        <label>Max Players:</label><br>
+        <input id="max-players" type="number" value="4" min="2" max="20"><br>
+        <button id="create-button" onclick="createPrivateMap()">Create</button>
         <div id="error"></div>
+    </div>
+    <div id="join-modal">
+        <h2>Join Private Map</h2>
+        <label>Map ID:</label><br>
+        <input id="map-id" type="text" placeholder="Enter 5-character ID"><br>
+        <button onclick="joinPrivate()">Join</button>
+        <div id="error"></div>
+    </div>
+    <div id="customize-modal">
+        <h2>Customize Your Ball</h2>
+        <div class="color-picker">
+            <!-- Colors will be populated dynamically -->
+        </div>
+        <button onclick="saveCustomization()">Save</button>
     </div>
     <canvas id="canvas"></canvas>
     <canvas id="minimap"></canvas>
     <div id="leaderboard"></div>
     <div id="hud">
         <div class="stat">
-            <label>Health</label><br>
+            <label>Health (HP)</label><br>
             <span id="size">10</span>
         </div>
         <div class="stat">
@@ -358,147 +709,155 @@
             </div>
         </div>
         <div class="stat">
-            <label>Power (E)</label><br>
+            <label>Rapid Fire (E)</label><br>
             <div class="cooldown">
                 <div id="rapid-cd" class="cooldown-fill" style="width:100%;"></div>
             </div>
         </div>
     </div>
+    <div id="prestige-notif">Press R to Prestige and Earn a Star!</div>
     <div id="help-button" onclick="openManual()">?</div>
-    <div id="manual-overlay">
-        <div id="manual-content">
+    <div id="manual-overlay" onclick="closeManual()">
+        <div id="manual-content" onclick="event.stopPropagation()">
             <h2>Dunes: Player Manual</h2>
             <h3>Objective</h3>
-            <p>Grow your ball by collecting golden sand dots and power-ups, eat smaller players, and shoot projectiles
-                to dominate the desert arena. Survive and climb the leaderboard by achieving kills and increasing your
-                HP!</p>
+            <p>Navigate the vast desert, grow your ball by collecting golden sand dots and power-ups, outmaneuver and
+                eat smaller players, and use projectiles to dominate. Climb the leaderboard with kills, HP, and prestige
+                stars!</p>
 
             <h3>Controls</h3>
             <ul>
-                <li><strong>Move</strong>: WASD or Arrow Keys to navigate your ball.</li>
-                <li><strong>Aim</strong>: Move your mouse (or drag on touch devices) to aim your barrel.</li>
-                <li><strong>Shoot</strong>: Click or tap to fire projectiles (deals 5 damage).</li>
-                <li><strong>Sprint</strong>: Press Spacebar to sprint (2x speed, 10s cooldown).</li>
-                <li><strong>Rapid Fire</strong>: Press E to activate rapid fire (10s duration, 1min cooldown).</li>
-                <li><strong>Prestige</strong>: Press R when your HP is 100 or more to reset to size 10, gain a
-                    prestige star, and unlock a gold particle effect.</li>
-                <li><strong>Manual</strong>: Click the "?" button in the bottom right to open/close this manual.</li>
+                <li><strong>Move</strong>: WASD or Arrow Keys (Keyboard) / Joystick (Touch).</li>
+                <li><strong>Aim & Shoot</strong>: Mouse to aim, click to fire (Keyboard/Mouse) / Tap right screen
+                    (Touch).</li>
+                <li><strong>Sprint</strong>: Spacebar or button for 2x speed (10s cooldown).</li>
+                <li><strong>Rapid Fire</strong>: E or button for spinning rapid shots (10s duration, 60s cooldown).</li>
+                <li><strong>Prestige</strong>: R or button at 100+ HP to reset, gain a star, and unlock gold effects.
+                </li>
+                <li><strong>Manual</strong>: Click "?" to toggle this guide.</li>
             </ul>
 
             <h3>Game Elements</h3>
             <ul>
-                <li><strong>Golden Sand Dots</strong>: Collect these to grow your size by 1 per dot (max size: 300).
-                </li>
-                <li><strong>Oases</strong>: Blue-green water areas slow your movement by 50%.</li>
-                <li><strong>Ruins</strong>: Brown walls block movement and projectiles.</li>
-                <li><strong>Players</strong>: Eat players smaller than you (1.1x HP difference) to gain half their
-                    HP and a kill. Get hit by projectiles to lose size; if HP drops below 10, you respawn.</li>
+                <li><strong>Golden Sand Dots</strong>: Grow +1 HP each (max 300).</li>
+                <li><strong>Oases (Blue-Green)</strong>: Slow movement by 50% – use strategically!</li>
+                <li><strong>Ruins (Brown Walls)</strong>: Block movement and shots – perfect for cover.</li>
+                <li><strong>Players</strong>: Eat smaller ones (if 1.1x larger) for half their HP and a kill.
+                    Projectiles reduce HP; below 10 HP respawns you.</li>
             </ul>
 
-            <h3>Power-Ups</h3>
-            <p>Collect square power-ups (last 10s):</p>
+            <h3>Power-Ups (Squares, 10s Duration)</h3>
             <ul>
-                <li><strong>Speed (⚡)</strong>: Increases movement speed by 50%.</li>
-                <li><strong>Shield (🛡️)</strong>: Reduces projectile damage by 50%.</li>
-                <li><strong>Growth (📈)</strong>: Increases HP by 20% (reverts after duration).</li>
-                <li><strong>Multi-Shot (🔫)</strong>: Fires three projectiles at once.</li>
+                <li><strong>Speed (⚡ Gold)</strong>: +50% movement.</li>
+                <li><strong>Shield (🛡️ Blue)</strong>: -50% projectile damage.</li>
+                <li><strong>Growth (📈 Green)</strong>: +20% HP (temporary).</li>
+                <li><strong>Multi-Shot (🔫 Red)</strong>: Fire three projectiles.</li>
+                <li><strong>Invis (👻 Gray)</strong>: Become semi-transparent.</li>
+                <li><strong>Teleport (🚀 Magenta)</strong>: Jump to random location.</li>
             </ul>
 
             <h3>Prestige System</h3>
-            <p>When your HP reaches 100, press R to prestige:</p>
+            <p>At 100+ HP, prestige to:</p>
             <ul>
-                <li>Resets your HP to 10 and repositions you randomly.</li>
-                <li>Earns a prestige star (★) displayed next to your name.</li>
-                <li>Adds gold orbiting particles around your ball.</li>
-                <li>Prestige count persists across sessions and is shown on the leaderboard.</li>
+                <li>Reset HP to 10, random respawn.</li>
+                <li>Earn a ★ star by your name.</li>
+                <li>Gain orbiting gold particles.</li>
+                <li>Stars persist and boost your leaderboard presence.</li>
             </ul>
 
-            <h3>Tips</h3>
+            <h3>Pro Tips</h3>
             <ul>
-                <li>Use oases strategically to slow down pursuers.</li>
-                <li>Hide behind ruins to avoid projectiles.</li>
-                <li>Check the minimap (top right) to track players and avoid ambushes.</li>
-                <li>Prestige to show off your skill with stars and particles!</li>
+                <li>Use oases to evade faster foes.</li>
+                <li>Ambush from behind ruins.</li>
+                <li>Monitor minimap for threats and opportunities.</li>
+                <li>Prestige often to showcase mastery!</li>
+                <li>Customize your color in sidebar for style.</li>
             </ul>
 
-            <button id="close-manual" onclick="closeManual()">Close</button>
+            <button id="close-manual" onclick="closeManual()">Close Guide</button>
         </div>
     </div>
-    <div id="loading-overlay">Loading...</div>
+    <div style="display: none;" id="loading-overlay">Loading Desert Arena...</div>
 
+    <!-- Touch Controls -->
+    <div id="joystick"></div>
+    <div id="joystick-knob"></div>
+    <div id="touch-controls">
+        <button id="sprint-button">Sprint</button>
+        <button id="rapid-button">Rapid Fire</button>
+        <button id="prestige-button">Prestige</button>
+        <button id="fire-button">Fire</button>
+    </div>
+
+    <!-- Fullscreen Button -->
+    <button id="fullscreen-button" onclick="toggleFullscreen()">Fullscreen</button>
 
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
     <script>
-        document.getElementById('name').value = localStorage.getItem('playerName') || '';
-
-        // Firebase config remains the same
-        const firebaseConfig = {
-            apiKey: "AIzaSyBh1NkpV56EFJBRyQMKCwQPvchAWFU6a9E",
-            authDomain: "empire-realms.firebaseapp.com",
-            databaseURL: "https://empire-realms-default-rtdb.firebaseio.com",
-            projectId: "empire-realms",
-            storageBucket: "empire-realms.firebasestorage.app",
-            messagingSenderId: "593809853047",
-            appId: "1:593809853047:web:9c7bfe0b30aff7fac3d472"
-        };
-
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.database(app);
-
-        const COLORS = ['#FF4500', '#FFD700', '#8B4513', '#D2B48C', '#F4A460', '#CD853F', '#A0522D', '#DEB887']; // Desert-inspired colors
-        const MAP_SIZE = 5000;
+        // Enhanced constants with further balance tweaks for more dynamic gameplay
+        const COLORS = ['#FF4500', '#FFD700', '#8B4513', '#D2B48C', '#F4A460', '#CD853F', '#A0522D', '#DEB887', '#B8860B', '#D2691E', '#FF6347', '#FFA500', '#A52A2A', '#DAA520', '#8B0000']; // More colors
+        const MAP_SIZE = 8000; // Even larger map for exploration
         const INITIAL_RADIUS = 10;
-        const MAX_RADIUS = 300;
-        const BASE_SPEED = 5;
-        const SPRINT_MULTIPLIER = 2;
-        const SPRINT_COOLDOWN = 10000; // 10s
-        const RAPID_FIRE_DURATION = 10000; // 10s
-        const RAPID_FIRE_COOLDOWN = 60000; // 1min
-        const RAPID_FIRE_RATE = 100; // ms per shot
-        const DOT_COUNT = 1000;
-        const DOT_RADIUS = 2;
-        const POWERUP_RADIUS = 15;
-        const PROJ_SPEED = 12;
-        const PROJ_RADIUS = 5;
-        const PROJ_DAMAGE = 5;
-        const BARREL_LENGTH = 1.5;
-        const POWERUP_COUNT = 20;
-        const POWERUP_TYPES = ['speed', 'shield', 'growth', 'multi-shot'];
-        const POWERUP_DURATION = 10000;
-        const UPDATE_INTERVAL = 0;
-        const DB_UPDATE_INTERVAL = 0;
+        const MAX_RADIUS = 500; // Higher max for endgame
+        const BASE_SPEED = 7; // Faster base speed
+        const SPRINT_MULTIPLIER = 3; // Stronger sprint
+        const SPRINT_COOLDOWN = 6000; // Shorter cooldown
+        const RAPID_FIRE_DURATION = 15000; // Longer rapid fire
+        const RAPID_FIRE_COOLDOWN = 40000; // Balanced cooldown
+        const RAPID_FIRE_RATE = 60; // Faster rate
+        const DOT_COUNT = 2000; // More dots
+        const DOT_RADIUS = 3;
+        const POWERUP_RADIUS = 20;
+        const POWERUP_COUNT = 40; // More power-ups
+        const POWERUP_TYPES = ['speed', 'shield', 'growth', 'multi-shot', 'invis', 'teleport'];
+        const POWERUP_DURATION = 15000; // Longer duration
+        const PROJ_SPEED = 18; // Faster projectiles
+        const PROJ_RADIUS = 7;
+        const PROJ_DAMAGE = 5; // Slightly higher damage
+        const BARREL_LENGTH = 2;
+        const UPDATE_INTERVAL = 16; // Smoother (60fps target)
+        const DB_UPDATE_INTERVAL = 40;
+        const COINS_PER_KILL = 20; // More rewards
+        const PRESTIGE_THRESHOLD = 100;
+        const PRESTIGE_PARTICLE_COUNT = 12; // More particles
+        const PRESTIGE_BONUS = 0.15; // Stronger bonus per prestige
+        const INACTIVE_TIMEOUT = 30000; // 30s inactive cleanup
 
+        // Updated walls and waters for more strategic map design
         const walls = [
-            { x: 500, y: 500, w: 10, h: 1000 },
-            { x: 1500, y: 1500, w: 1000, h: 10 },
-            { x: 2500, y: 500, w: 10, h: 1500 },
-            { x: 500, y: 2500, w: 1500, h: 10 },
-            { x: 3000, y: 3000, w: 10, h: 1000 },
-            { x: 3500, y: 2000, w: 1000, h: 10 },
-            { x: 1000, y: 3000, w: 10, h: 800 },
-            { x: 4000, y: 1000, w: 800, h: 10 },
-            // More walls for complexity and desert ruins feel
-            { x: 200, y: 1200, w: 600, h: 10 },
-            { x: 2200, y: 800, w: 10, h: 500 },
-            { x: 3200, y: 2500, w: 500, h: 10 },
-            { x: 400, y: 4000, w: 10, h: 700 },
-            { x: 4500, y: 1500, w: 300, h: 10 },
-            { x: 1800, y: 3500, w: 10, h: 400 },
-            { x: 2800, y: 500, w: 400, h: 10 },
-            { x: 3800, y: 3000, w: 10, h: 600 }
+            { x: 500, y: 500, w: 20, h: 1500 },
+            { x: 2000, y: 2000, w: 1500, h: 20 },
+            { x: 3000, y: 500, w: 20, h: 2000 },
+            { x: 500, y: 3000, w: 2000, h: 20 },
+            { x: 4000, y: 4000, w: 20, h: 1500 },
+            { x: 4500, y: 2500, w: 1500, h: 20 },
+            { x: 1000, y: 4000, w: 20, h: 1200 },
+            { x: 5000, y: 1000, w: 1200, h: 20 },
+            { x: 200, y: 1500, w: 1000, h: 20 },
+            { x: 2500, y: 1000, w: 20, h: 800 },
+            { x: 3500, y: 3000, w: 800, h: 20 },
+            { x: 400, y: 5000, w: 20, h: 1000 },
+            { x: 5500, y: 2000, w: 500, h: 20 },
+            { x: 2000, y: 4500, w: 20, h: 600 },
+            { x: 3500, y: 500, w: 600, h: 20 },
+            { x: 4800, y: 3500, w: 20, h: 1000 },
+            { x: 1000, y: 1200, w: 400, h: 20 },
+            { x: 2500, y: 2500, w: 20, h: 400 },
         ];
 
-        const waters = [ // Oases in desert
-            { x: 1000, y: 1000, w: 500, h: 500 },
-            { x: 3000, y: 1000, w: 800, h: 600 },
-            { x: 2000, y: 3500, w: 700, h: 400 },
-            { x: 500, y: 3500, w: 600, h: 400 },
-            { x: 4000, y: 3000, w: 500, h: 500 },
-            { x: 1500, y: 400, w: 300, h: 300 },
-            { x: 3500, y: 3500, w: 400, h: 400 }
+        const waters = [
+            { x: 800, y: 800, w: 800, h: 800 },
+            { x: 3500, y: 800, w: 1200, h: 800 },
+            { x: 2000, y: 4000, w: 1000, h: 600 },
+            { x: 400, y: 4000, w: 1000, h: 600 },
+            { x: 4500, y: 3500, w: 800, h: 800 },
+            { x: 1500, y: 300, w: 500, h: 500 },
+            { x: 4000, y: 4000, w: 600, h: 600 },
+            { x: 6000, y: 600, w: 500, h: 500 },
+            { x: 200, y: 6000, w: 600, h: 400 },
+            { x: 5000, y: 5000, w: 700, h: 700 },
         ];
 
         let peer;
@@ -508,7 +867,7 @@
         let dots = {};
         let powerups = {};
         let projectiles = {};
-        let myPlayer = { kills: 0, powerups: [], sprintCooldown: 0, rapidCooldown: 0, isSprinting: false, isRapidFiring: false, spinAngle: 0, prestige: 0 };
+        let myPlayer = { kills: 0, coins: 0, powerups: [], sprintCooldown: 0, rapidCooldown: 0, isSprinting: false, isRapidFiring: false, spinAngle: 0, prestige: 0, invisTimer: 0 };
         let keys = new Set();
         let lastDbUpdate = 0;
         let lastPeerUpdate = 0;
@@ -518,6 +877,19 @@
         let touchStartY = 0;
         let isTouchDevice = 'ontouchstart' in window;
         let rapidFireTimer;
+        let currentMap = null;
+        let joined = false;
+        let demoPlayer = { x: window.innerWidth / 2, y: window.innerHeight / 2, radius: 60, color: COLORS[0], angle: 0 };
+        let demoProjectiles = [];
+        let demoSpinSpeed = 0.05;
+        let demoFireTimer = 0;
+        let selectedColor = COLORS[0];
+        let vx = 0; // For touch movement
+        let vy = 0;
+        let joystickActive = false;
+        let joystickCenterX = 0;
+        let joystickCenterY = 0;
+        const joystickMax = 75;
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -529,41 +901,126 @@
         const hudPowerups = document.getElementById('powerups');
         const sprintCd = document.getElementById('sprint-cd');
         const rapidCd = document.getElementById('rapid-cd');
-        const PRESTIGE_THRESHOLD = 100; // Minimum radius to prestige
-        const PRESTIGE_PARTICLE_COUNT = 5; // Number of particles for cosmetic effect
+        const prestigeNotif = document.getElementById('prestige-notif');
+        const totalKillsSpan = document.getElementById('total-kills');
+        const coinsSpan = document.getElementById('coins');
+        const joystick = document.getElementById('joystick');
+        const joystickKnob = document.getElementById('joystick-knob');
+        const touchControls = document.getElementById('touch-controls');
+        const sprintButton = document.getElementById('sprint-button');
+        const rapidButton = document.getElementById('rapid-button');
+        const prestigeButton = document.getElementById('prestige-button');
+        const fireButton = document.getElementById('fire-button');
+        const fullscreenButton = document.getElementById('fullscreen-button');
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            minimap.width = 200;
-            minimap.height = 200;
+            minimap.width = 220;
+            minimap.height = 220;
+            demoPlayer.x = canvas.width / 2;
+            demoPlayer.y = canvas.height / 2;
         }
 
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        if (!isTouchDevice) {
+        // Touch controls setup
+        if (isTouchDevice) {
+            touchControls.style.display = 'flex';
+            fullscreenButton.style.display = 'block';
+
+            sprintButton.addEventListener('touchstart', startSprint);
+            sprintButton.addEventListener('touchend', stopSprint);
+            rapidButton.addEventListener('touchstart', () => {
+                if (myPlayer.rapidCooldown <= 0 && !myPlayer.isRapidFiring) {
+                    startRapidFire();
+                }
+            });
+            prestigeButton.addEventListener('touchstart', () => {
+                if (myPlayer.radius >= PRESTIGE_THRESHOLD) {
+                    prestigeReset();
+                }
+            });
+            fireButton.addEventListener('touchstart', fireProjectile);
+
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                if (touch.clientX < canvas.width / 2) {
+                    joystickActive = true;
+                    joystickCenterX = touch.clientX;
+                    joystickCenterY = touch.clientY;
+                    joystick.style.left = `${joystickCenterX - 75}px`;
+                    joystick.style.top = `${joystickCenterY - 75}px`;
+                    joystick.style.display = 'block';
+                    joystickKnob.style.display = 'block';
+                    updateJoystick(touch.clientX, touch.clientY);
+                } else {
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                    mouseX = touch.clientX;
+                    mouseY = touch.clientY;
+                }
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                if (joystickActive) {
+                    updateJoystick(touch.clientX, touch.clientY);
+                } else {
+                    mouseX = touch.clientX;
+                    mouseY = touch.clientY;
+                }
+            });
+
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                if (joystickActive) {
+                    joystickActive = false;
+                    vx = 0;
+                    vy = 0;
+                    joystick.style.display = 'none';
+                    joystickKnob.style.display = 'none';
+                } else if (Math.hypot(mouseX - touchStartX, mouseY - touchStartY) < 20) {
+                    fireProjectile();
+                }
+            });
+        } else {
             canvas.addEventListener('mousemove', (e) => {
                 mouseX = e.clientX;
                 mouseY = e.clientY;
             });
             canvas.addEventListener('click', fireProjectile);
-        } else {
-            canvas.addEventListener('touchstart', (e) => {
-                const touch = e.touches[0];
-                touchStartX = touch.clientX;
-                touchStartY = touch.clientY;
-            });
-            canvas.addEventListener('touchmove', (e) => {
-                const touch = e.touches[0];
-                mouseX = touch.clientX;
-                mouseY = touch.clientY;
-            });
-            canvas.addEventListener('touchend', (e) => {
-                if (Math.hypot(mouseX - touchStartX, mouseY - touchStartY) < 20) {
-                    fireProjectile();
-                }
-            });
+            fullscreenButton.style.display = 'block';
+        }
+
+        function updateJoystick(tx, ty) {
+            let dx = tx - joystickCenterX;
+            let dy = ty - joystickCenterY;
+            let dist = Math.hypot(dx, dy);
+            if (dist > joystickMax) {
+                dx *= joystickMax / dist;
+                dy *= joystickMax / dist;
+            }
+            joystickKnob.style.left = `${joystickCenterX + dx - 25}px`;
+            joystickKnob.style.top = `${joystickCenterY + dy - 25}px`;
+            vx = dx / joystickMax;
+            vy = dy / joystickMax;
+        }
+
+        function startSprint() {
+            if (myPlayer.sprintCooldown <= 0) {
+                myPlayer.isSprinting = true;
+            }
+        }
+
+        function stopSprint() {
+            if (myPlayer.isSprinting) {
+                myPlayer.isSprinting = false;
+                myPlayer.sprintCooldown = SPRINT_COOLDOWN;
+            }
         }
 
         window.addEventListener('keydown', (e) => {
@@ -571,13 +1028,13 @@
             if (['w', 'a', 's', 'd', 'arrowup', 'arrowleft', 'arrowdown', 'arrowright'].includes(k)) {
                 keys.add(k);
             } else if (k === ' ') {
-                if (myPlayer.sprintCooldown === 0) {
-                    myPlayer.isSprinting = true;
-                }
+                startSprint();
             } else if (k === 'e') {
-                if (myPlayer.rapidCooldown === 0 && !myPlayer.isRapidFiring) {
+                if (myPlayer.rapidCooldown <= 0 && !myPlayer.isRapidFiring) {
                     startRapidFire();
                 }
+            } else if (k === 'r' && myPlayer.radius >= PRESTIGE_THRESHOLD) {
+                prestigeReset();
             }
         });
 
@@ -586,39 +1043,147 @@
             if (['w', 'a', 's', 'd', 'arrowup', 'arrowleft', 'arrowdown', 'arrowright'].includes(k)) {
                 keys.delete(k);
             } else if (k === ' ') {
-                if (myPlayer.isSprinting) {
-                    myPlayer.isSprinting = false;
-                    myPlayer.sprintCooldown = SPRINT_COOLDOWN;
-                    setTimeout(() => { myPlayer.sprintCooldown = 0; }, SPRINT_COOLDOWN);
-                }
+                stopSprint();
             }
         });
 
         document.addEventListener('visibilitychange', updateActivity);
 
-        window.addEventListener('keydown', (e) => {
-            const k = e.key.toLowerCase();
-            if (['w', 'a', 's', 'd', 'arrowup', 'arrowleft', 'arrowdown', 'arrowright'].includes(k)) {
-                keys.add(k);
-            } else if (k === ' ') {
-                if (myPlayer.sprintCooldown === 0) {
-                    myPlayer.isSprinting = true;
-                }
-            } else if (k === 'e') {
-                if (myPlayer.rapidCooldown === 0 && !myPlayer.isRapidFiring) {
-                    startRapidFire();
-                }
-            } else if (k === 'r' && myPlayer.radius >= PRESTIGE_THRESHOLD) {
-                prestigeReset();
+        function showJoinModal() {
+            document.getElementById('join-modal').style.display = 'block';
+        }
+
+        function customize() {
+            const colorPicker = document.querySelector('#customize-modal .color-picker');
+            colorPicker.innerHTML = '';
+            COLORS.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.classList.add('color-swatch');
+                swatch.style.backgroundColor = color;
+                swatch.onclick = () => {
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                    swatch.classList.add('selected');
+                    selectedColor = color;
+                };
+                if (color === myPlayer.color) swatch.classList.add('selected');
+                colorPicker.appendChild(swatch);
+            });
+            document.getElementById('customize-modal').style.display = 'block';
+        }
+
+        function saveCustomization() {
+            myPlayer.color = selectedColor;
+            updateDbPlayer();
+            broadcastUpdate(true);
+            document.getElementById('customize-modal').style.display = 'none';
+        }
+
+        function showCreateModal() {
+            document.getElementById('create-modal').style.display = 'block';
+        }
+
+        function createPrivateMap() {
+            const maxPlayers = parseInt(document.getElementById('max-players').value);
+            const errorDiv = document.getElementById('error');
+            if (isNaN(maxPlayers) || maxPlayers < 2 || maxPlayers > 20) {
+                errorDiv.textContent = 'Max players must be between 2 and 20.';
+                return;
             }
-        });
+            document.getElementById('loading-overlay').style.display = 'flex';
+            generateUniqueID().then((id) => {
+                const mapPath = 'maps/' + id;
+                db.ref(mapPath + '/settings').set({ maxPlayers });
+                checkAndSpawnDots(id);
+                checkAndSpawnPowerUps(id);
+                document.getElementById('create-modal').style.display = 'none';
+                joinMap(id);
+                navigator.clipboard.writeText(id).then(() => {
+                    alert(`Map created! ID: ${id} (Copied to clipboard) - Share with friends.`);
+                }).catch(() => {
+                    alert(`Map created! ID: ${id} - Share with friends.`);
+                });
+            }).catch((err) => {
+                errorDiv.textContent = 'Failed to create map. Try again.';
+                document.getElementById('loading-overlay').style.display = 'none';
+            });
+        }
+
+        async function generateUniqueID() {
+            let id;
+            do {
+                id = generateID(5);
+                const snapshot = await db.ref('maps/' + id).once('value');
+            } while (snapshot.val() !== null);
+            return id;
+        }
+
+        function generateID(length) {
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return result;
+        }
+
+        function joinPrivate() {
+            const id = document.getElementById('map-id').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('error');
+            if (id.length !== 5 || !/^[a-z0-9]+$/.test(id)) {
+                errorDiv.textContent = 'Invalid Map ID (5 alphanumeric characters).';
+                return;
+            }
+            document.getElementById('join-modal').style.display = 'none';
+            joinMap(id);
+        }
+
+        function joinMain() {
+            joinMap('main');
+        }
+
+        function joinMap(mapID) {
+            currentMap = mapID;
+            document.getElementById('loading-overlay').style.display = 'flex';
+            db.ref('maps/' + mapID).once('value').then((snapshot) => {
+                if (snapshot.val() === null && mapID !== 'main') {
+                    alert('Map not found! Check the ID.');
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    return;
+                }
+                if (mapID === 'main') {
+                    checkAndSpawnDots('main');
+                    checkAndSpawnPowerUps('main');
+                }
+                const name = document.getElementById('player-name').value.trim() || playerName;
+                initGame(name, mapID);
+            }).catch(() => {
+                alert('Connection failed. Try again.');
+                document.getElementById('loading-overlay').style.display = 'none';
+            });
+        }
+
+        function updateActivity() {
+            if (joined) {
+                myPlayer.active = document.visibilityState === 'visible';
+                broadcastUpdate();
+                updateDbPlayer();
+            }
+        }
 
         function openManual() {
-            document.getElementById('manual-overlay').style.display = 'block';
+            document.getElementById('manual-overlay').style.display = 'flex';
         }
 
         function closeManual() {
             document.getElementById('manual-overlay').style.display = 'none';
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
+            } else {
+                document.exitFullscreen();
+            }
         }
 
         function prestigeReset() {
@@ -635,55 +1200,47 @@
             localStorage.setItem('playerPrestige_' + myPlayer.name, myPlayer.prestige);
             updateDbPlayer();
             broadcastUpdate(true);
+            prestigeNotif.style.display = 'none';
         }
 
-        // Initial setup for handling saved names
-        const savedName = localStorage.getItem('playerName');
-        if (savedName) {
-            document.getElementById('name').value = savedName;
-            document.getElementById('loading-overlay').style.display = 'flex'; // Show loading for returning users
-            document.getElementById('login').style.display = 'none'; // Hide login screen
-            document.getElementById('minimap').style.display = 'none'; // Hide minimap
-            document.getElementById('leaderboard').style.display = 'none'; // Hide leaderboard
-            document.getElementById('hud').style.display = 'none'; // Hide HUD
-            joinGame(); // Auto-login for returning users
-        } else {
-            // For new users, ensure login is visible and loading is hidden
-            document.getElementById('login').style.display = 'block';
-            document.getElementById('loading-overlay').style.display = 'none';
-            document.getElementById('minimap').style.display = 'none';
-            document.getElementById('leaderboard').style.display = 'none';
-            document.getElementById('hud').style.display = 'none';
-        }
+        let playerName = localStorage.getItem('playerName') || 'Nomad' + Math.floor(10000 + Math.random() * 90000);
+        localStorage.setItem('playerName', playerName);
+        document.getElementById('player-name').value = playerName;
 
-        function updateActivity() {
-            myPlayer.active = document.visibilityState === 'visible';
-            broadcastUpdate();
-            updateDbPlayer();
-        }
-
-        function joinGame() {
-            const name = document.getElementById('name').value.trim();
-            if (!name || name.length < 3) {
-                document.getElementById('error').textContent = 'Name must be at least 3 characters!';
-                return;
+        // Name change handler
+        document.getElementById('player-name').addEventListener('change', () => {
+            const newName = document.getElementById('player-name').value.trim();
+            if (newName && newName !== playerName) {
+                playerName = newName;
+                localStorage.setItem('playerName', playerName);
+                if (joined) {
+                    myPlayer.name = playerName;
+                    updateDbPlayer();
+                    broadcastUpdate(true);
+                }
             }
-            // Disable join button and show loading screen
-            const joinButton = document.getElementById('join-button');
-            joinButton.disabled = true;
-            document.getElementById('loading-overlay').style.display = 'flex';
-            document.getElementById('login').style.display = 'none';
-            localStorage.setItem('playerName', name);
-            initGame(name);
-        }
+        });
 
-        function initGame(name) {
+        const firebaseConfig = {
+            apiKey: "AIzaSyBh1NkpV56EFJBRyQMKCwQPvchAWFU6a9E",
+            authDomain: "empire-realms.firebaseapp.com",
+            databaseURL: "https://empire-realms-default-rtdb.firebaseio.com",
+            projectId: "empire-realms",
+            storageBucket: "empire-realms.firebasestorage.app",
+            messagingSenderId: "593809853047",
+            appId: "1:593809853047:web:9c7bfe0b30aff7fac3d472"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(app);
+
+        function initGame(name, mapID) {
             peer = new Peer();
 
             peer.on('connection', (conn) => {
                 conn.on('open', () => {
                     connections.push(conn);
-                    conn.send({ type: 'update', x: myPlayer.x, y: myPlayer.y, radius: myPlayer.radius, angle: myPlayer.angle, active: myPlayer.active, kills: myPlayer.kills, prestige: myPlayer.prestige, projectiles: Object.values(projectiles).filter(proj => proj.owner === myId).map(proj => ({ id: proj.id, x: proj.x, y: proj.y, vx: proj.vx, vy: proj.vy, radius: proj.radius })) });
+                    conn.send({ type: 'update', x: myPlayer.x, y: myPlayer.y, radius: myPlayer.radius, angle: myPlayer.angle, active: myPlayer.active, kills: myPlayer.kills, coins: myPlayer.coins, prestige: myPlayer.prestige, projectiles: Object.values(projectiles).filter(proj => proj.owner === myId).map(proj => ({ id: proj.id, x: proj.x, y: proj.y, vx: proj.vx, vy: proj.vy, radius: proj.radius })) });
                 });
                 conn.on('data', handlePeerData.bind(conn));
                 conn.on('close', () => {
@@ -693,8 +1250,15 @@
 
             peer.on('open', (id) => {
                 myId = id;
-                db.ref('players').once('value').then((snapshot) => {
+                const mapPath = 'maps/' + mapID;
+                db.ref(mapPath + '/players').once('value').then((snapshot) => {
                     const existingPlayers = snapshot.val() || {};
+                    const settings = snapshot.child('settings').val() || { maxPlayers: Infinity };
+                    if (Object.keys(existingPlayers).length >= settings.maxPlayers) {
+                        alert('Map is full!');
+                        document.getElementById('loading-overlay').style.display = 'none';
+                        return;
+                    }
                     let oldId = null;
                     let oldPlayer = null;
                     for (let id in existingPlayers) {
@@ -704,22 +1268,21 @@
                             break;
                         }
                     }
-                    let color, x, y, radius, kills, angle, secret, prestige;
+                    let color, x, y, radius, kills, coins, angle, secret, prestige;
                     if (oldPlayer) {
                         const localSecret = localStorage.getItem('playerSecret_' + name);
                         if (localSecret !== oldPlayer.secret) {
-                            document.getElementById('error').textContent = 'Name is taken by another user!';
-                            document.getElementById('login').style.display = 'block';
+                            alert('Name taken! Choose another.');
                             document.getElementById('loading-overlay').style.display = 'none';
-                            document.getElementById('join-button').disabled = false;
                             return;
                         }
-                        db.ref(`players/${oldId}`).remove();
+                        db.ref(mapPath + '/players/' + oldId).remove();
                         color = oldPlayer.color;
                         x = oldPlayer.x;
                         y = oldPlayer.y;
                         radius = oldPlayer.radius;
                         kills = oldPlayer.kills;
+                        coins = oldPlayer.coins || 0;
                         angle = oldPlayer.angle;
                         secret = oldPlayer.secret;
                         prestige = oldPlayer.prestige || 0;
@@ -734,53 +1297,72 @@
                         }
                         radius = INITIAL_RADIUS;
                         kills = 0;
+                        coins = 0;
                         angle = 0;
-                        secret = crypto.randomUUID();
+                        secret = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2);
                         prestige = parseInt(localStorage.getItem('playerPrestige_' + name)) || 0;
                         localStorage.setItem('playerSecret_' + name, secret);
                     }
 
-                    myPlayer = { ...myPlayer, name, color, x, y, radius, angle, active: true, kills, prestige };
+                    myPlayer = { ...myPlayer, name, color, x, y, radius, angle, active: true, kills, coins, prestige };
                     players[myId] = myPlayer;
 
-                    db.ref(`players/${myId}`).set({ name, color, x, y, radius, angle, active: true, kills, peerId: myId, lastUpdate: Date.now(), secret, prestige });
+                    db.ref(mapPath + '/players/' + myId).set({ name, color, x, y, radius, angle, active: true, kills, coins, peerId: myId, lastUpdate: Date.now(), secret, prestige });
 
-                    // Hide loading screen and show UI elements after successful initialization
+                    document.getElementById('main-menu').style.display = 'none';
                     document.getElementById('loading-overlay').style.display = 'none';
                     document.getElementById('minimap').style.display = 'block';
                     document.getElementById('leaderboard').style.display = 'block';
                     document.getElementById('hud').style.display = 'flex';
-                    document.getElementById('help-button').style.display = 'block'; // Show help button
-                    setupDatabaseListeners();
-                    checkAndSpawnDots();
-                    checkAndSpawnPowerUps();
+                    document.getElementById('help-button').style.display = 'block';
+                    joined = true;
+                    setupDatabaseListeners(mapID);
                     setInterval(broadcastUpdate, UPDATE_INTERVAL);
+                    setInterval(cleanInactivePlayers, 5000); // New: Cleanup inactive
                     renderLoop();
                 }).catch((error) => {
-                    // Handle Firebase errors
-                    document.getElementById('error').textContent = 'Failed to connect. Try again!';
-                    document.getElementById('login').style.display = 'block';
+                    alert('Failed to join. Try again!');
                     document.getElementById('loading-overlay').style.display = 'none';
-                    document.getElementById('join-button').disabled = false;
                 });
             });
+            peer.on('error', (err) => {
+                document.getElementById('loading-overlay').style.display = 'none';
+                alert('Network error. Check connection.');
+            });
+
+            peer.on('close', () => {
+                if (joined && myId) {
+                    const mapPath = 'maps/' + currentMap;
+                    db.ref(mapPath + '/players/' + myId).update({ active: false });
+                }
+            });
+        }
+
+        function cleanInactivePlayers() {
+            const now = Date.now();
+            for (const id in players) {
+                if (id !== myId && players[id].dbLastUpdate && now - players[id].dbLastUpdate > INACTIVE_TIMEOUT) {
+                    delete players[id];
+                }
+            }
         }
 
         function handlePeerData(data) {
             if (data.type === 'update') {
                 const p = players[this.peer];
-                if (p && data.timestamp > (p.lastUpdate || 0)) { // Only process newer updates
+                if (p && data.timestamp > (p.lastUpdate || 0)) {
                     p.targetX = data.x;
                     p.targetY = data.y;
                     p.targetRadius = data.radius;
                     p.targetAngle = data.angle;
                     p.active = data.active;
                     p.kills = data.kills;
+                    p.coins = data.coins;
                     p.prestige = data.prestige || 0;
-                    p.lastUpdate = data.timestamp; // Use sender's timestamp
+                    p.lastUpdate = data.timestamp;
                     if (data.projectiles) {
                         data.projectiles.forEach(proj => {
-                            if (proj.owner !== myId) {
+                            if (proj.owner !== myId && !projectiles[proj.id]) {
                                 projectiles[proj.id] = {
                                     id: proj.id,
                                     owner: this.peer,
@@ -796,7 +1378,10 @@
                 }
             } else if (data.type === 'hit') {
                 myPlayer.radius = Math.min(myPlayer.radius + data.amount, MAX_RADIUS);
-                if (data.kill) myPlayer.kills++;
+                if (data.kill) {
+                    myPlayer.kills++;
+                    myPlayer.coins += COINS_PER_KILL;
+                }
                 updateDbPlayer();
                 broadcastUpdate();
             } else if (data.type === 'eaten') {
@@ -830,17 +1415,18 @@
             }
         }
 
-        function setupDatabaseListeners() {
-            db.ref('players').on('child_added', (snapshot) => {
+        function setupDatabaseListeners(mapID) {
+            const mapPath = 'maps/' + mapID;
+            db.ref(mapPath + '/players').on('child_added', (snapshot) => {
                 const id = snapshot.key;
                 if (id === myId) return;
                 const val = snapshot.val();
-                players[id] = { ...val, targetX: val.x, targetY: val.y, targetRadius: val.radius, targetAngle: val.angle, lastUpdate: Date.now() };
+                players[id] = { ...val, targetX: val.x, targetY: val.y, targetRadius: val.radius, targetAngle: val.angle, lastUpdate: Date.now(), dbLastUpdate: val.lastUpdate };
                 if (myId < id) {
-                    const conn = peer.connect(players[id].peerId);
+                    const conn = peer.connect(val.peerId);
                     conn.on('open', () => {
                         connections.push(conn);
-                        conn.send({ type: 'update', x: myPlayer.x, y: myPlayer.y, radius: myPlayer.radius, angle: myPlayer.angle, active: myPlayer.active, kills: myPlayer.kills });
+                        conn.send({ type: 'update', x: myPlayer.x, y: myPlayer.y, radius: myPlayer.radius, angle: myPlayer.angle, active: myPlayer.active, kills: myPlayer.kills, coins: myPlayer.coins });
                     });
                     conn.on('data', handlePeerData.bind(conn));
                     conn.on('close', () => {
@@ -849,7 +1435,7 @@
                 }
             });
 
-            db.ref('players').on('child_changed', (snapshot) => {
+            db.ref(mapPath + '/players').on('child_changed', (snapshot) => {
                 const id = snapshot.key;
                 if (id === myId) return;
                 const updated = snapshot.val();
@@ -862,77 +1448,79 @@
                     players[id].targetAngle = updated.angle;
                     players[id].active = updated.active;
                     players[id].kills = updated.kills;
+                    players[id].coins = updated.coins;
                     players[id].lastUpdate = Date.now();
-                    if (updated.lastUpdate) players[id].dbLastUpdate = updated.lastUpdate;
-                    if (updated.secret) players[id].secret = updated.secret;
+                    players[id].dbLastUpdate = updated.lastUpdate;
                 }
             });
 
-            db.ref('players').on('child_removed', (snapshot) => {
+            db.ref(mapPath + '/players').on('child_removed', (snapshot) => {
                 const id = snapshot.key;
                 delete players[id];
                 connections = connections.filter((c) => c.peer !== id);
             });
 
-            db.ref('dots').on('child_added', (snapshot) => {
+            db.ref(mapPath + '/dots').on('child_added', (snapshot) => {
                 dots[snapshot.key] = snapshot.val();
             });
 
-            db.ref('dots').on('child_removed', (snapshot) => {
+            db.ref(mapPath + '/dots').on('child_removed', (snapshot) => {
                 delete dots[snapshot.key];
             });
 
-            db.ref('powerups').on('child_added', (snapshot) => {
+            db.ref(mapPath + '/powerups').on('child_added', (snapshot) => {
                 powerups[snapshot.key] = snapshot.val();
             });
 
-            db.ref('powerups').on('child_removed', (snapshot) => {
+            db.ref(mapPath + '/powerups').on('child_removed', (snapshot) => {
                 delete powerups[snapshot.key];
             });
         }
 
-        function checkAndSpawnDots() {
-            db.ref('dots').once('value').then((snapshot) => {
+        function checkAndSpawnDots(mapID) {
+            const mapPath = 'maps/' + mapID;
+            db.ref(mapPath + '/dots').once('value').then((snapshot) => {
                 const currentDots = snapshot.val() || {};
                 const count = Object.keys(currentDots).length;
                 for (let i = count; i < DOT_COUNT; i++) {
-                    spawnDot();
+                    spawnDot(mapID);
                 }
             });
         }
 
-        function spawnDot() {
+        function spawnDot(mapID) {
             let x = Math.random() * MAP_SIZE;
             let y = Math.random() * MAP_SIZE;
             while (intersectsWall(x, y, DOT_RADIUS) || isInWater(x, y)) {
                 x = Math.random() * MAP_SIZE;
                 y = Math.random() * MAP_SIZE;
             }
-            db.ref('dots').push({
+            db.ref('maps/' + mapID + '/dots').push({
                 x, y,
-                color: '#DAA520', // Golden sand dots
+                color: '#DAA520',
                 radius: DOT_RADIUS
             });
         }
 
-        function checkAndSpawnPowerUps() {
-            db.ref('powerups').once('value').then((snapshot) => {
+        function checkAndSpawnPowerUps(mapID) {
+            const mapPath = 'maps/' + mapID;
+            db.ref(mapPath + '/powerups').once('value').then((snapshot) => {
                 const currentPowerUps = snapshot.val() || {};
                 const count = Object.keys(currentPowerUps).length;
                 for (let i = count; i < POWERUP_COUNT; i++) {
-                    spawnPowerUp();
+                    spawnPowerUp(mapID);
                 }
             });
         }
 
-        function spawnPowerUp() {
+        function spawnPowerUp(mapID) {
             let x = Math.random() * MAP_SIZE;
             let y = Math.random() * MAP_SIZE;
             while (intersectsWall(x, y, POWERUP_RADIUS) || isInWater(x, y)) {
                 x = Math.random() * MAP_SIZE;
                 y = Math.random() * MAP_SIZE;
             }
-            db.ref('powerups').push({
+            db.ref('maps/' + mapID + '/powerups').push({
                 x, y,
                 type: POWERUP_TYPES[Math.floor(Math.random() * POWERUP_TYPES.length)],
                 radius: POWERUP_RADIUS
@@ -941,7 +1529,7 @@
 
         function broadcastUpdate(force = false) {
             const now = Date.now();
-            if (!force && now - lastPeerUpdate < 30) return; // Throttle to ~33 FPS (30ms)
+            if (!force && now - lastPeerUpdate < UPDATE_INTERVAL) return;
             lastPeerUpdate = now;
             const data = {
                 type: 'update',
@@ -951,8 +1539,9 @@
                 angle: Math.round(myPlayer.angle * 100) / 100,
                 active: myPlayer.active,
                 kills: myPlayer.kills,
+                coins: myPlayer.coins,
                 prestige: myPlayer.prestige,
-                timestamp: now, // Add timestamp for synchronization
+                timestamp: now,
                 projectiles: Object.values(projectiles)
                     .filter(proj => proj.owner === myId)
                     .map(proj => ({
@@ -969,13 +1558,15 @@
                     conn.send(data);
                 }
             });
-            if (now - lastDbUpdate > 50) {
+            if (now - lastDbUpdate > DB_UPDATE_INTERVAL) {
                 updateDbPlayer();
             }
         }
 
         function updateDbPlayer() {
-            db.ref(`players/${myId}`).update({ x: myPlayer.x, y: myPlayer.y, radius: myPlayer.radius, angle: myPlayer.angle, active: myPlayer.active, kills: myPlayer.kills, lastUpdate: Date.now(), prestige: myPlayer.prestige });
+            if (!currentMap || !myId) return;
+            const mapPath = 'maps/' + currentMap;
+            db.ref(mapPath + '/players/' + myId).update({ x: myPlayer.x, y: myPlayer.y, radius: myPlayer.radius, angle: myPlayer.angle, active: myPlayer.active, kills: myPlayer.kills, coins: myPlayer.coins, lastUpdate: Date.now(), prestige: myPlayer.prestige, color: myPlayer.color, name: myPlayer.name });
             lastDbUpdate = Date.now();
         }
 
@@ -1007,7 +1598,7 @@
         }
 
         function fireProjectile() {
-            const offsets = myPlayer.powerups.includes('multi-shot') ? [-0.2, 0, 0.2] : [0];
+            const offsets = myPlayer.powerups.includes('multi-shot') ? [-0.3, 0, 0.3] : [0]; // Wider spread
             offsets.forEach(offset => {
                 fireSingle(myPlayer.angle + offset);
             });
@@ -1019,8 +1610,8 @@
             let elapsed = 0;
             rapidFireTimer = setInterval(() => {
                 if (!myPlayer.isRapidFiring) return;
-                myPlayer.spinAngle += Math.PI / 10; // Fast spin
-                myPlayer.angle += Math.PI / 10; // Rotate aim
+                myPlayer.spinAngle += Math.PI / 6; // Faster spin
+                myPlayer.angle += Math.PI / 6;
                 fireProjectile();
                 elapsed += RAPID_FIRE_RATE;
                 if (elapsed >= RAPID_FIRE_DURATION) {
@@ -1033,7 +1624,7 @@
         function stopRapidFire() {
             myPlayer.isRapidFiring = false;
             clearInterval(rapidFireTimer);
-            setTimeout(() => { myPlayer.rapidCooldown = 0; }, RAPID_FIRE_COOLDOWN);
+            myPlayer.rapidCooldown = RAPID_FIRE_COOLDOWN;
         }
 
         function intersectsWall(cx, cy, cr) {
@@ -1044,6 +1635,10 @@
                 }
             }
             return false;
+        }
+
+        function isInBounds(cx, cy, cr) {
+            return cx >= cr && cx <= MAP_SIZE - cr && cy >= cr && cy <= MAP_SIZE - cr;
         }
 
         function isInWater(cx, cy) {
@@ -1057,30 +1652,41 @@
         }
 
         function handleMovement() {
-            let vx = 0, vy = 0;
-            if (keys.has('a') || keys.has('arrowleft')) vx -= 1;
-            if (keys.has('d') || keys.has('arrowright')) vx += 1;
-            if (keys.has('w') || keys.has('arrowup')) vy -= 1;
-            if (keys.has('s') || keys.has('arrowdown')) vy += 1;
+            let moveVx = vx, moveVy = vy;
+            if (keys.size > 0) {
+                moveVx = 0;
+                moveVy = 0;
+                if (keys.has('a') || keys.has('arrowleft')) moveVx -= 1;
+                if (keys.has('d') || keys.has('arrowright')) moveVx += 1;
+                if (keys.has('w') || keys.has('arrowup')) moveVy -= 1;
+                if (keys.has('s') || keys.has('arrowdown')) moveVy += 1;
+            }
 
-            if (vx || vy) {
-                const len = Math.hypot(vx, vy);
+            if (moveVx || moveVy) {
+                const len = Math.hypot(moveVx, moveVy);
                 if (len) {
-                    vx /= len;
-                    vy /= len;
+                    moveVx /= len;
+                    moveVy /= len;
                 }
-                let speed = BASE_SPEED * Math.pow(myPlayer.radius / INITIAL_RADIUS, -0.1);
-                if (myPlayer.powerups.includes('speed')) speed *= 1.5;
+                let speed = BASE_SPEED * Math.pow(myPlayer.radius / INITIAL_RADIUS, -0.12); // Less size penalty
+                speed *= (1 + myPlayer.prestige * PRESTIGE_BONUS);
+                if (myPlayer.powerups.includes('speed')) speed *= 1.6; // Buffed
                 if (myPlayer.isSprinting) speed *= SPRINT_MULTIPLIER;
-                if (isInWater(myPlayer.x, myPlayer.y)) speed *= 0.5;
-                const newX = myPlayer.x + vx * speed;
-                const newY = myPlayer.y + vy * speed;
+                if (isInWater(myPlayer.x, myPlayer.y)) speed *= 0.7; // Less slow
 
-                if (!intersectsWall(newX, newY, myPlayer.radius) &&
-                    newX >= myPlayer.radius && newX <= MAP_SIZE - myPlayer.radius &&
-                    newY >= myPlayer.radius && newY <= MAP_SIZE - myPlayer.radius) {
-                    myPlayer.x = newX;
-                    myPlayer.y = newY;
+                const tryX = myPlayer.x + moveVx * speed;
+                const tryY = myPlayer.y + moveVy * speed;
+
+                if (!intersectsWall(tryX, tryY, myPlayer.radius) && isInBounds(tryX, tryY, myPlayer.radius)) {
+                    myPlayer.x = tryX;
+                    myPlayer.y = tryY;
+                } else {
+                    if (!intersectsWall(tryX, myPlayer.y, myPlayer.radius) && isInBounds(tryX, myPlayer.y, myPlayer.radius)) {
+                        myPlayer.x = tryX;
+                    }
+                    if (!intersectsWall(myPlayer.x, tryY, myPlayer.radius) && isInBounds(myPlayer.x, tryY, myPlayer.radius)) {
+                        myPlayer.y = tryY;
+                    }
                 }
             }
         }
@@ -1091,9 +1697,9 @@
                 const dot = dots[key];
                 const dist = Math.hypot(myPlayer.x - dot.x, myPlayer.y - dot.y);
                 if (dist < myPlayer.radius + dot.radius && myPlayer.radius < MAX_RADIUS) {
-                    db.ref(`dots/${key}`).remove();
-                    myPlayer.radius += 1;
-                    spawnDot();
+                    db.ref('maps/' + currentMap + '/dots/' + key).remove().catch(() => { });
+                    myPlayer.radius = Math.min(myPlayer.radius + 1, MAX_RADIUS);
+                    spawnDot(currentMap);
                 }
             }
 
@@ -1102,14 +1708,14 @@
                 const pu = powerups[key];
                 const dist = Math.hypot(myPlayer.x - pu.x, myPlayer.y - pu.y);
                 if (dist < myPlayer.radius + pu.radius) {
-                    db.ref(`powerups/${key}`).remove();
+                    db.ref('maps/' + currentMap + '/powerups/' + key).remove().catch(() => { });
                     applyPowerUp(pu.type);
                     connections.forEach((conn) => {
                         if (conn.open) {
                             conn.send({ type: 'remove_powerup', id: key });
                         }
                     });
-                    spawnPowerUp();
+                    spawnPowerUp(currentMap);
                 }
             }
 
@@ -1118,11 +1724,11 @@
                 if (id === myId) continue;
                 const p = players[id];
                 const dist = Math.hypot(myPlayer.x - p.x, myPlayer.y - p.y);
-                if (myPlayer.radius > p.radius * 1.1 && dist < myPlayer.radius - p.radius * 0.5) {
-                    const old_radius = p.radius;
-                    const amount = old_radius / 2;
+                if (p.active && myPlayer.radius > p.radius * 1.05 && dist < myPlayer.radius - p.radius * 0.5) { // Easier eating
+                    const amount = p.radius / 2;
                     myPlayer.radius = Math.min(myPlayer.radius + amount, MAX_RADIUS);
                     myPlayer.kills++;
+                    myPlayer.coins += COINS_PER_KILL;
 
                     const conn = connections.find(c => c.peer === id);
                     if (conn && conn.open) {
@@ -1176,11 +1782,23 @@
         }
 
         function applyPowerUp(type) {
+            if (myPlayer.powerups.includes(type)) return; // Prevent stacking
             myPlayer.powerups.push(type);
-            if (type === 'growth') myPlayer.radius = Math.min(myPlayer.radius * 1.2, MAX_RADIUS);
+            if (type === 'growth') myPlayer.radius = Math.min(myPlayer.radius * 1.3, MAX_RADIUS); // Buffed
+            if (type === 'invis') myPlayer.invisTimer = POWERUP_DURATION;
+            if (type === 'teleport') {
+                myPlayer.x = Math.random() * MAP_SIZE;
+                myPlayer.y = Math.random() * MAP_SIZE;
+                while (intersectsWall(myPlayer.x, myPlayer.y, myPlayer.radius) || isInWater(myPlayer.x, myPlayer.y)) {
+                    myPlayer.x = Math.random() * MAP_SIZE;
+                    myPlayer.y = Math.random() * MAP_SIZE;
+                }
+                broadcastUpdate(true);
+            }
             setTimeout(() => {
                 myPlayer.powerups = myPlayer.powerups.filter(p => p !== type);
-                if (type === 'growth') myPlayer.radius /= 1.2;
+                if (type === 'growth') myPlayer.radius /= 1.3;
+                if (type === 'invis') myPlayer.invisTimer = 0;
                 updateHud();
             }, POWERUP_DURATION);
             updateHud();
@@ -1191,13 +1809,7 @@
                 const proj = projectiles[key];
                 const newX = proj.x + proj.vx;
                 const newY = proj.y + proj.vy;
-                if (
-                    intersectsWall(newX, newY, proj.radius) ||
-                    newX < 0 ||
-                    newX > MAP_SIZE ||
-                    newY < 0 ||
-                    newY > MAP_SIZE
-                ) {
+                if (intersectsWall(newX, newY, proj.radius) || newX < 0 || newX > MAP_SIZE || newY < 0 || newY > MAP_SIZE) {
                     delete projectiles[key];
                     connections.forEach((conn) => {
                         if (conn.open) {
@@ -1213,22 +1825,18 @@
 
         function interpolatePlayers() {
             const now = Date.now();
-            const deltaTime = 16 / 1000; // Assume ~60 FPS (16ms per frame)
+            const posLerp = 0.4; // Smoother interpolation
+            const radiusLerp = 0.2;
+            const angleLerp = 0.7;
             for (const id in players) {
                 if (id === myId) continue;
                 const p = players[id];
-                if (p.targetX !== undefined && p.lastUpdate && now - p.lastUpdate < 2000) { // Extend staleness threshold
-                    // Time-based interpolation
-                    const timeSinceUpdate = (now - p.lastUpdate) / 1000;
-                    const posLerp = Math.min(1, deltaTime / (timeSinceUpdate + 0.1)); // Smooth lerp, avoid division by zero
-                    const radiusLerp = Math.min(1, deltaTime / 0.2); // Slower radius changes
-                    const angleLerp = Math.min(1, deltaTime / 0.1); // Fast angle updates
+                if (p.targetX !== undefined && p.lastUpdate && now - p.lastUpdate < 1000) { // Shorter timeout
                     p.x = p.x ? lerp(p.x, p.targetX, posLerp) : p.targetX;
                     p.y = p.y ? lerp(p.y, p.targetY, posLerp) : p.targetY;
                     p.radius = p.radius ? lerp(p.radius, p.targetRadius, radiusLerp) : p.targetRadius;
                     p.angle = p.angle ? lerpAngle(p.angle, p.targetAngle, angleLerp) : p.targetAngle;
                 } else {
-                    // Snap to target for very stale data
                     p.x = p.targetX;
                     p.y = p.targetY;
                     p.radius = p.targetRadius;
@@ -1237,22 +1845,20 @@
             }
         }
 
-        // Helper function for linear interpolation
-function lerp(start, end, alpha) {
-    return start + (end - start) * alpha;
-}
+        function lerp(start, end, alpha) {
+            return start + (end - start) * alpha;
+        }
 
-// Helper function for angle interpolation (handles wraparound)
-function lerpAngle(start, end, alpha) {
-    const diff = ((((end - start) % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-    return start + diff * alpha;
-}
+        function lerpAngle(start, end, alpha) {
+            const diff = ((((end - start) % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+            return start + diff * alpha;
+        }
 
         function updateLeaderboard() {
-            const sorted = Object.values(players).sort((a, b) => b.kills - a.kills || b.radius - a.radius).slice(0, 10);
-            let html = '<h3>Leaderboard</h3><ol>';
+            const sorted = Object.values(players).filter(p => p.active).sort((a, b) => b.kills - a.kills || b.radius - a.radius || b.prestige - a.prestige).slice(0, 10);
+            let html = '<h3>Desert Lords</h3><ol>';
             sorted.forEach(p => {
-                html += `<li><span class="name">${p.name}${p.prestige > 0 ? ' ★' + p.prestige : ''}</span><span class="stats">${p.kills} Kills | ${Math.floor(p.radius)} HP</span></li>`;
+                html += `<li><span class="name">${p.name}${p.prestige > 0 ? ' ★' + p.prestige : ''}</span><span class="stats">${p.kills} K | ${Math.floor(p.radius)} HP | ${p.coins} C</span></li>`;
             });
             html += '</ol>';
             leaderboard.innerHTML = html;
@@ -1262,13 +1868,68 @@ function lerpAngle(start, end, alpha) {
             hudSize.textContent = Math.floor(myPlayer.radius);
             hudKills.textContent = myPlayer.kills;
             hudPowerups.textContent = myPlayer.powerups.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(', ') || 'None';
-            sprintCd.style.width = `${(1 - myPlayer.sprintCooldown / SPRINT_COOLDOWN) * 100}%`;
-            rapidCd.style.width = `${(1 - myPlayer.rapidCooldown / (RAPID_FIRE_COOLDOWN + RAPID_FIRE_DURATION)) * 100}%`;
-            if (myPlayer.sprintCooldown > 0) myPlayer.sprintCooldown -= 16; // Approx frame time
-            if (myPlayer.rapidCooldown > 0) myPlayer.rapidCooldown -= 16;
+            sprintCd.style.width = `${Math.max(0, 1 - myPlayer.sprintCooldown / SPRINT_COOLDOWN) * 100}%`;
+            rapidCd.style.width = `${Math.max(0, 1 - myPlayer.rapidCooldown / (RAPID_FIRE_COOLDOWN + RAPID_FIRE_DURATION)) * 100}%`;
+            if (myPlayer.sprintCooldown > 0) myPlayer.sprintCooldown -= UPDATE_INTERVAL;
+            if (myPlayer.rapidCooldown > 0) myPlayer.rapidCooldown -= UPDATE_INTERVAL;
+            if (myPlayer.radius >= PRESTIGE_THRESHOLD) {
+                prestigeNotif.style.display = 'block';
+            } else {
+                prestigeNotif.style.display = 'none';
+            }
+            totalKillsSpan.textContent = myPlayer.kills;
+            coinsSpan.textContent = myPlayer.coins;
         }
 
-        function renderLoop() {
+        function renderDemo() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            demoPlayer.angle += demoSpinSpeed;
+            demoFireTimer += 0.016;
+            if (demoFireTimer > 1) { // Faster demo fire
+                demoSpinSpeed = Math.random() > 0.5 ? 0.06 : -0.06;
+                if (Math.random() < 0.4) {
+                    const dx = Math.cos(demoPlayer.angle);
+                    const dy = Math.sin(demoPlayer.angle);
+                    const projX = demoPlayer.x + dx * (demoPlayer.radius + 10);
+                    const projY = demoPlayer.y + dy * (demoPlayer.radius + 10);
+                    const vx = dx * 25;
+                    const vy = dy * 25;
+                    demoProjectiles.push({ x: projX, y: projY, vx, vy, radius: 12 });
+                }
+                demoFireTimer = 0;
+            }
+
+            const gradient = ctx.createRadialGradient(demoPlayer.x, demoPlayer.y, 0, demoPlayer.x, demoPlayer.y, demoPlayer.radius);
+            gradient.addColorStop(0, demoPlayer.color);
+            gradient.addColorStop(1, '#8B4513');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(demoPlayer.x, demoPlayer.y, demoPlayer.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(demoPlayer.x, demoPlayer.y);
+            ctx.lineTo(demoPlayer.x + Math.cos(demoPlayer.angle) * demoPlayer.radius * BARREL_LENGTH, demoPlayer.y + Math.sin(demoPlayer.angle) * demoPlayer.radius * BARREL_LENGTH);
+            ctx.stroke();
+
+            demoProjectiles = demoProjectiles.filter(proj => {
+                proj.x += proj.vx;
+                proj.y += proj.vy;
+                if (proj.x < 0 || proj.x > canvas.width || proj.y < 0 || proj.y > canvas.height) {
+                    return false;
+                }
+                ctx.fillStyle = '#FF4500';
+                ctx.beginPath();
+                ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+                ctx.fill();
+                return true;
+            });
+        }
+
+        function renderGame() {
             updateAim();
             handleMovement();
             updateProjectiles();
@@ -1283,22 +1944,30 @@ function lerpAngle(start, end, alpha) {
             ctx.save();
             ctx.translate(camX, camY);
 
-            const viewLeft = myPlayer.x - canvas.width / 2;
-            const viewRight = myPlayer.x + canvas.width / 2;
-            const viewTop = myPlayer.y - canvas.height / 2;
-            const viewBottom = myPlayer.y + canvas.height / 2;
+            const viewLeft = myPlayer.x - canvas.width / 2 - 300; // Larger buffer for smooth scrolling
+            const viewRight = myPlayer.x + canvas.width / 2 + 300;
+            const viewTop = myPlayer.y - canvas.height / 2 - 300;
+            const viewBottom = myPlayer.y + canvas.height / 2 + 300;
 
-            // Draw oases (waters) with blue-green for contrast
-            ctx.fillStyle = 'rgba(0, 128, 128, 0.4)'; // Teal oasis
+            // Draw borders with thicker lines
+            ctx.strokeStyle = '#4A2C0B';
+            ctx.lineWidth = 40;
+            ctx.strokeRect(-20, -20, MAP_SIZE + 40, MAP_SIZE + 40);
+
+            // Oases with improved gradient and ripple effect simulation
             for (const water of waters) {
                 if (water.x + water.w > viewLeft && water.x < viewRight && water.y + water.h > viewTop && water.y < viewBottom) {
+                    const grad = ctx.createLinearGradient(water.x, water.y, water.x + water.w, water.y + water.h);
+                    grad.addColorStop(0, 'rgba(0, 128, 128, 0.6)');
+                    grad.addColorStop(1, 'rgba(0, 191, 255, 0.4)');
+                    ctx.fillStyle = grad;
                     ctx.fillRect(water.x, water.y, water.w, water.h);
                 }
             }
 
-            // Draw grid with subtle sand lines
-            ctx.strokeStyle = 'rgba(139, 69, 19, 0.1)'; // Brown grid
-            const gridSize = 100;
+            // Grid with subtle fade
+            ctx.strokeStyle = 'rgba(139, 69, 19, 0.1)';
+            const gridSize = 200; // Larger grid
             const startX = Math.floor(viewLeft / gridSize) * gridSize;
             const startY = Math.floor(viewTop / gridSize) * gridSize;
             for (let i = startX; i <= viewRight; i += gridSize) {
@@ -1314,15 +1983,19 @@ function lerpAngle(start, end, alpha) {
                 ctx.stroke();
             }
 
-            // Draw walls as rocky brown
-            ctx.fillStyle = '#8B4513'; // Brown rocks
+            // Walls with textured gradient
             for (const wall of walls) {
                 if (wall.x + wall.w > viewLeft && wall.x < viewRight && wall.y + wall.h > viewTop && wall.y < viewBottom) {
+                    const grad = ctx.createLinearGradient(wall.x, wall.y, wall.x, wall.y + wall.h);
+                    grad.addColorStop(0, '#8B4513');
+                    grad.addColorStop(0.5, '#A0522D');
+                    grad.addColorStop(1, '#8B4513');
+                    ctx.fillStyle = grad;
                     ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
                 }
             }
 
-            // Draw dots
+            // Dots with enhanced glow
             for (const key in dots) {
                 const dot = dots[key];
                 if (dot.x > viewLeft && dot.x < viewRight && dot.y > viewTop && dot.y < viewBottom) {
@@ -1330,48 +2003,57 @@ function lerpAngle(start, end, alpha) {
                     ctx.beginPath();
                     ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
                     ctx.fill();
-                }
-            }
-
-            // Draw power-ups with distinct shapes/icons
-            for (const key in powerups) {
-                const pu = powerups[key];
-                if (pu.x > viewLeft && pu.x < viewRight && pu.y > viewTop && pu.y < viewBottom) {
-                    ctx.fillStyle = getPowerUpColor(pu.type);
+                    ctx.globalAlpha = 0.5;
                     ctx.beginPath();
-                    ctx.rect(pu.x - pu.radius, pu.y - pu.radius, pu.radius * 2, pu.radius * 2); // Square for distinction
-                    ctx.fill();
-                    // Icon text
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(getPowerUpIcon(pu.type), pu.x, pu.y + 4);
-                    // Pulse
-                    ctx.globalAlpha = 0.5 + Math.sin(Date.now() / 200) * 0.5;
-                    ctx.beginPath();
-                    ctx.rect(pu.x - pu.radius * 2, pu.y - pu.radius * 2, pu.radius * 4, pu.radius * 4);
+                    ctx.arc(dot.x, dot.y, dot.radius * 4, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.globalAlpha = 1;
                 }
             }
 
-            // Draw projectiles
-            for (const key in projectiles) {
-                const proj = projectiles[key];
-                if (proj.x > viewLeft && proj.x < viewRight && proj.y > viewTop && proj.y < viewBottom) {
-                    ctx.fillStyle = '#FF4500'; // Orange projectiles for desert
+            // Power-ups with better animations
+            for (const key in powerups) {
+                const pu = powerups[key];
+                if (pu.x > viewLeft && pu.x < viewRight && pu.y > viewTop && pu.y < viewBottom) {
+                    ctx.fillStyle = getPowerUpColor(pu.type);
                     ctx.beginPath();
-                    ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+                    ctx.rect(pu.x - pu.radius, pu.y - pu.radius, pu.radius * 2, pu.radius * 2);
                     ctx.fill();
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(getPowerUpIcon(pu.type), pu.x, pu.y + 6);
+                    ctx.globalAlpha = 0.7 + Math.sin(Date.now() / 200) * 0.3; // Faster pulse
+                    ctx.beginPath();
+                    ctx.rect(pu.x - pu.radius * 1.8, pu.y - pu.radius * 1.8, pu.radius * 3.6, pu.radius * 3.6);
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
                 }
             }
 
-            // Draw players
+            // Projectiles with longer trail
+            for (const key in projectiles) {
+                const proj = projectiles[key];
+                if (proj.x > viewLeft && proj.x < viewRight && proj.y > viewTop && proj.y < viewBottom) {
+                    ctx.fillStyle = '#FF4500';
+                    ctx.beginPath();
+                    ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Trail
+                    ctx.globalAlpha = 0.4;
+                    ctx.beginPath();
+                    ctx.arc(proj.x - proj.vx * 0.8, proj.y - proj.vy * 0.8, proj.radius * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            // Players with improved visuals
             for (const id in players) {
                 const p = players[id];
                 if (p.x + p.radius > viewLeft && p.x - p.radius < viewRight && p.y + p.radius > viewTop && p.y - p.radius < viewBottom) {
                     ctx.save();
-                    ctx.globalAlpha = p.active ? 1 : 0.5;
+                    ctx.globalAlpha = p.active ? (p.invisTimer > 0 ? 0.3 : 1) : 0.3; // Stronger invis
                     const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
                     gradient.addColorStop(0, p.color);
                     gradient.addColorStop(1, '#8B4513');
@@ -1380,72 +2062,67 @@ function lerpAngle(start, end, alpha) {
                     ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Draw prestige particles
                     if (p.prestige > 0) {
-                        ctx.globalAlpha = 0.7;
+                        ctx.globalAlpha = 0.9;
                         for (let i = 0; i < PRESTIGE_PARTICLE_COUNT; i++) {
-                            const angle = (i / PRESTIGE_PARTICLE_COUNT) * Math.PI * 2 + Date.now() / 500;
-                            const px = p.x + Math.cos(angle) * (p.radius + 10);
-                            const py = p.y + Math.sin(angle) * (p.radius + 10);
-                            ctx.fillStyle = '#FFD700'; // Gold particles
+                            const angle = (i / PRESTIGE_PARTICLE_COUNT) * Math.PI * 2 + Date.now() / 200; // Faster orbit
+                            const px = p.x + Math.cos(angle) * (p.radius + 15);
+                            const py = p.y + Math.sin(angle) * (p.radius + 15);
+                            ctx.fillStyle = '#FFD700';
                             ctx.beginPath();
-                            ctx.arc(px, py, 3, 0, Math.PI * 2);
+                            ctx.arc(px, py, 5, 0, Math.PI * 2);
                             ctx.fill();
                         }
-                        ctx.globalAlpha = p.active ? 1 : 0.5;
+                        ctx.globalAlpha = p.active ? 1 : 0.3;
                     }
 
                     if (p.powerups && p.powerups.includes('shield')) {
                         ctx.strokeStyle = '#FFD700';
-                        ctx.lineWidth = 2;
+                        ctx.lineWidth = 4;
                         ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.radius + 5, 0, Math.PI * 2);
+                        ctx.arc(p.x, p.y, p.radius + 8, 0, Math.PI * 2);
                         ctx.stroke();
                     }
 
-                    // Barrel
                     ctx.strokeStyle = '#000';
-                    ctx.lineWidth = 4;
+                    ctx.lineWidth = 6;
                     ctx.beginPath();
                     ctx.moveTo(p.x, p.y);
                     ctx.lineTo(p.x + Math.cos(p.angle) * p.radius * BARREL_LENGTH, p.y + Math.sin(p.angle) * p.radius * BARREL_LENGTH);
                     ctx.stroke();
 
-                    // Name with prestige indicator
                     ctx.fillStyle = '#000';
-                    ctx.font = `${Math.max(12, p.radius / 5)}px Arial`;
+                    ctx.font = `${Math.max(16, p.radius / 3)}px Roboto`; // Larger text
                     ctx.textAlign = 'center';
-                    ctx.fillText(`${p.name}${p.prestige > 0 ? ' ★' + p.prestige : ''}`, p.x, p.y - p.radius - 10);
+                    ctx.fillText(`${p.name}${p.prestige > 0 ? ' ★' + p.prestige : ''}`, p.x, p.y - p.radius - 15);
                     ctx.restore();
                 }
             }
 
-            // Spin effect for myPlayer if rapid firing
             if (myPlayer.isRapidFiring) {
                 ctx.save();
                 ctx.translate(myPlayer.x, myPlayer.y);
                 ctx.rotate(myPlayer.spinAngle);
                 ctx.translate(-myPlayer.x, -myPlayer.y);
-                // Redraw myPlayer with rotation, but since it's circle, add visual lines or something
                 ctx.strokeStyle = 'red';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 4;
                 ctx.beginPath();
-                ctx.moveTo(myPlayer.x - myPlayer.radius, myPlayer.y);
-                ctx.lineTo(myPlayer.x + myPlayer.radius, myPlayer.y);
+                ctx.moveTo(myPlayer.x - myPlayer.radius * 1.5, myPlayer.y);
+                ctx.lineTo(myPlayer.x + myPlayer.radius * 1.5, myPlayer.y);
                 ctx.stroke();
                 ctx.beginPath();
-                ctx.moveTo(myPlayer.x, myPlayer.y - myPlayer.radius);
-                ctx.lineTo(myPlayer.x, myPlayer.y + myPlayer.radius);
+                ctx.moveTo(myPlayer.x, myPlayer.y - myPlayer.radius * 1.5);
+                ctx.lineTo(myPlayer.x, myPlayer.y + myPlayer.radius * 1.5);
                 ctx.stroke();
                 ctx.restore();
             }
 
             ctx.restore();
 
-            // Draw opponent direction arrows on the border
+            // Off-screen indicators with improved design
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
-            const margin = 20;
+            const margin = 40;
             const halfW = cx - margin;
             const halfH = cy - margin;
 
@@ -1454,9 +2131,10 @@ function lerpAngle(start, end, alpha) {
                 const p = players[id];
                 const dx = p.x - myPlayer.x;
                 const dy = p.y - myPlayer.y;
+                const dist = Math.hypot(dx, dy);
                 const screenX = cx + dx;
                 const screenY = cy + dy;
-                if (screenX >= 0 && screenX <= canvas.width && screenY >= 0 && screenY <= canvas.height) continue; // on screen
+                if (screenX >= 0 && screenX <= canvas.width && screenY >= 0 && screenY <= canvas.height) continue;
 
                 if (dx === 0 && dy === 0) continue;
 
@@ -1466,34 +2144,35 @@ function lerpAngle(start, end, alpha) {
                 const angle = Math.atan2(dy, dx);
 
                 if (absX * halfH > absY * halfW) {
-                    // Hits left/right
                     posX = dx > 0 ? canvas.width - margin : margin;
                     posY = cy + (posX - cx) * (dy / dx);
                 } else {
-                    // Hits top/bottom
                     posY = dy > 0 ? canvas.height - margin : margin;
                     posX = cx + (posY - cy) * (dx / dy);
                 }
 
-                // Draw arrow
                 ctx.save();
                 ctx.translate(posX, posY);
                 ctx.rotate(angle);
                 ctx.fillStyle = p.color;
                 ctx.beginPath();
-                ctx.moveTo(0, -10);
-                ctx.lineTo(20, 0);
-                ctx.lineTo(0, 10);
+                ctx.moveTo(0, -15);
+                ctx.lineTo(30, 0);
+                ctx.lineTo(0, 15);
                 ctx.closePath();
                 ctx.fill();
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Roboto';
+                ctx.textAlign = 'center';
+                ctx.fillText(Math.floor(dist / 100), 15, 6);
                 ctx.restore();
             }
 
-            // Minimap with desert colors
+            // Minimap with improved details
             mctx.clearRect(0, 0, minimap.width, minimap.height);
             const scale = minimap.width / MAP_SIZE;
 
-            mctx.fillStyle = 'rgba(0, 128, 128, 0.4)';
+            mctx.fillStyle = 'rgba(0, 128, 128, 0.6)';
             for (const water of waters) {
                 mctx.fillRect(water.x * scale, water.y * scale, water.w * scale, water.h * scale);
             }
@@ -1505,52 +2184,58 @@ function lerpAngle(start, end, alpha) {
 
             for (const id in players) {
                 const p = players[id];
-                mctx.globalAlpha = p.active ? 1 : 0.3; // Lower opacity for inactive players
-                // Draw player with larger size and distinct outline
+                mctx.globalAlpha = p.active ? 1 : 0.4;
                 mctx.fillStyle = p.color;
-                mctx.strokeStyle = p.active ? '#FFFFFF' : '#666666'; // White outline for active, gray for inactive
-                mctx.lineWidth = 1; // Thin but visible outline
+                mctx.strokeStyle = p.active ? '#FFFFFF' : '#666666';
+                mctx.lineWidth = 2;
                 mctx.beginPath();
-                mctx.arc(p.x * scale, p.y * scale, Math.max(3, p.radius * scale * 0.5), 0, Math.PI * 2); // Increased minimum size
+                mctx.arc(p.x * scale, p.y * scale, Math.max(5, p.radius * scale * 0.7), 0, Math.PI * 2);
                 mctx.fill();
-                mctx.stroke(); // Add outline
-                // Optional: Draw player name initials for better identification
+                mctx.stroke();
                 if (p.active) {
                     mctx.fillStyle = '#FFFFFF';
-                    mctx.font = 'bold 8px Arial';
+                    mctx.font = 'bold 12px Roboto';
                     mctx.textAlign = 'center';
-                    mctx.fillText(p.name.charAt(0).toUpperCase(), p.x * scale, p.y * scale + 2);
+                    mctx.fillText(p.name.charAt(0).toUpperCase(), p.x * scale, p.y * scale + 4);
                 }
             }
             mctx.globalAlpha = 1;
 
-            // Highlight own player with a distinct marker
             mctx.fillStyle = myPlayer.color;
-            mctx.strokeStyle = '#FFD700'; // Gold outline for self
-            mctx.lineWidth = 1.5;
+            mctx.strokeStyle = '#FFD700';
+            mctx.lineWidth = 3;
             mctx.beginPath();
-            mctx.arc(myPlayer.x * scale, myPlayer.y * scale, Math.max(4, myPlayer.radius * scale * 0.5), 0, Math.PI * 2);
+            mctx.arc(myPlayer.x * scale, myPlayer.y * scale, Math.max(6, myPlayer.radius * scale * 0.7), 0, Math.PI * 2);
             mctx.fill();
             mctx.stroke();
 
             const viewX = (myPlayer.x - canvas.width / 2) * scale;
             const viewY = (myPlayer.y - canvas.height / 2) * scale;
             mctx.strokeStyle = '#8B4513';
-            mctx.lineWidth = 1;
+            mctx.lineWidth = 3;
             mctx.strokeRect(viewX, viewY, canvas.width * scale, canvas.height * scale);
 
             updateLeaderboard();
             updateHud();
+        }
 
+        function renderLoop() {
+            if (!joined) {
+                renderDemo();
+            } else {
+                renderGame();
+            }
             requestAnimationFrame(renderLoop);
         }
 
         function getPowerUpColor(type) {
             switch (type) {
-                case 'speed': return '#FFD700'; // Gold
-                case 'shield': return '#00BFFF'; // Blue
-                case 'growth': return '#32CD32'; // Green
-                case 'multi-shot': return '#FF4500'; // Orange
+                case 'speed': return '#FFD700';
+                case 'shield': return '#00BFFF';
+                case 'growth': return '#32CD32';
+                case 'multi-shot': return '#FF4500';
+                case 'invis': return '#808080';
+                case 'teleport': return '#FF00FF';
                 default: return '#FFF';
             }
         }
@@ -1561,21 +2246,21 @@ function lerpAngle(start, end, alpha) {
                 case 'shield': return '🛡️';
                 case 'growth': return '📈';
                 case 'multi-shot': return '🔫';
+                case 'invis': return '👻';
+                case 'teleport': return '🚀';
                 default: return '?';
             }
         }
 
         window.onbeforeunload = () => {
-            if (myId) {
-                db.ref(`players/${myId}`).update({ active: false });
+            if (joined && myId) {
+                const mapPath = 'maps/' + currentMap;
+                db.ref(mapPath + '/players/' + myId).update({ active: false });
             }
         };
 
-        peer.on('close', () => {
-            if (myId) {
-                db.ref(`players/${myId}`).update({ active: false });
-            }
-        });
+        // Start render
+        renderLoop();
     </script>
 </body>
 
